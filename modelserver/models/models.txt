@@ -1,0 +1,7 @@
+The Tensorflow models to detect Citation Need for English, French, and Italian Wikipedia can be found here:
+https://drive.google.com/drive/folders/166ok0FmW-SiMNJl9ZYpeVjc8BeO1195W?usp=sharing
+
+The production Dockerfile downloads the English model as part of the build process.
+
+For development environments, download the English language mdoel and place them in this ./models folder
+* https://citelearn.s3-ap-southeast-2.amazonaws.com/models/fa_en_model_rnn_attention_section.h5

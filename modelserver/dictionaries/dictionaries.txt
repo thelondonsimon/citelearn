@@ -1,0 +1,11 @@
+To run the models, you will need two dictionaries:
+* Sentence dictionary: these are the embeddings for the words in the sentences
+* Section dictionary: embeddings for the section titles.
+
+Whatever words or sections are outside these two dictionaries, they will be assigned the UNK embedding. 
+
+The production Dockerfile downloads these files as part of the build process.
+
+For development environments, download the English language dictionaries and place them in this ./dictionaries folder
+* https://citelearn.s3-ap-southeast-2.amazonaws.com/dictionaries/section_dict_en.pck
+* https://citelearn.s3-ap-southeast-2.amazonaws.com/dictionaries/word_dict_en.pck

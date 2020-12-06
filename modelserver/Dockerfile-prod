@@ -1,0 +1,12 @@
+FROM python:3.6-slim-buster
+
+ADD ["https://citelearn.s3-ap-southeast-2.amazonaws.com/dictionaries/section_dict_en.pck","https://citelearn.s3-ap-southeast-2.amazonaws.com/dictionaries/word_dict_en.pck","/dictionaries/"]
+ADD ["https://citelearn.s3-ap-southeast-2.amazonaws.com/models/fa_en_model_rnn_attention_section.h5","/models/"]
+
+COPY ./requirements.txt .
+
+RUN pip install --upgrade -r requirements.txt
+
+COPY ./app /app
+
+CMD ["python", "/app/main.py"]
