@@ -1,4 +1,4 @@
-FROM node:10 as build-stage
+FROM node:lts-alpine as build-stage
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ COPY ./ .
 RUN npm run build
 
 
-FROM nginx as production-stage
+FROM nginx:alpine as production-stage
 
 RUN mkdir /app
 

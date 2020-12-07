@@ -23,6 +23,8 @@
 
 <script>
 const axios = require('axios');
+const apiBaseUrl = process.env.VUE_APP_API_BASE_URL
+
 import CiteLearnOutput from './CiteLearnOutput.vue'
 
 export default {
@@ -46,7 +48,7 @@ export default {
       this.showOverlay = true 
       const that = this
       const json = { text: this.form.text }
-      axios.post('http://localhost:8000/predict',json)
+      axios.post(apiBaseUrl + '/predict',json)
         .then(function(response) {
           let predictions = []
           for(let i = 0; i < response.data.scores.length; i++) {
