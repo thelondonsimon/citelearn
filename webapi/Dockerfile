@@ -5,3 +5,6 @@ COPY requirements.txt /app/
 RUN pip install -r /app/requirements.txt
 
 COPY ./app /app
+
+
+CMD ["./wait-for-it.sh", "postgres:5432", "--", "/start.sh"]

@@ -11,6 +11,7 @@ import time
 import uuid
 
 import redis
+import psycopg2
 
 from fastapi import FastAPI, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -30,6 +31,8 @@ app.add_middleware(
 )
 
 db = redis.StrictRedis(host=os.environ.get("REDIS_HOST"))
+pg_con = psycopg2.connect(host=os.environ.get("POSTGRES_HOST"), dbname = os.environ.get("POSTGRES_DB"), user = os.environ.get("POSTGRES_USER"), password = os.environ.get("POSTGRES_PASSWORD"))
+
 CLIENT_MAX_TRIES = int(os.environ.get("CLIENT_MAX_TRIES"))
 
 
@@ -51,6 +54,10 @@ def predict(input: InputText):
     text = input.text
     d = {"id": k, "text": text}
     db.rpush(os.environ.get("TEXT_QUEUE"), json.dumps(d))
+
+    with pg_con:
+        with pg_con.cursor() as cursor:
+            cursor.execute("INSERT INTO prediction (id,created_at,updated_at,input) VALUES (%s,%s,%s,%s)",(k,'now()','now()',text))
     
     # Keep looping for CLIENT_MAX_TRIES times
     num_tries = 0
@@ -68,6 +75,12 @@ def predict(input: InputText):
 
             # Delete the result from the database and break from the polling loop
             db.delete(k)
+
+            # Update the persistent data store
+            with pg_con:
+                with pg_con.cursor() as cursor:
+                    cursor.execute("UPDATE prediction SET prediction = %s, updated_at = %s WHERE id = %s",(json.dumps(data),'now()',k))
+            
             break
 
         # Sleep for a small amount to give the model a chance to classify the input image
