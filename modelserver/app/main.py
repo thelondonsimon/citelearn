@@ -18,6 +18,7 @@ import nltk.data
 
 import config
 from utils import *
+from citationdetector import detectCitation
 
 import numpy as np
 import redis
@@ -99,12 +100,18 @@ def classify_process():
 
             # Retrieve the predictions for each original request
             # and store the serialized data in Redis for retrieval by the web server
+            # including both the original sentence and whether an in-text citation was
+            # detected in that sentence
             j = 0
             for i,num in enumerate(numberOfSentencesInTexts):
-                predictions = { "scores": [], "sentences": [] }
+                predictions = []
                 for k,p in enumerate(preds[j:num]):
-                    predictions["scores"].append(p[0].astype(float))
-                    predictions["sentences"].append(originalSentences[j+k])
+                    predictions.append({
+                        'key': (j+k),
+                        'score': p[0].astype(float),
+                        'sentence': originalSentences[j+k],
+                        'citationDetected': detectCitation(originalSentences[j+k])
+                    })
                 db.set(textIds[i], json.dumps(predictions))
                 j += num
 

@@ -1,20 +1,24 @@
 <template>
   <div v-if=predictions.length>
-    <h3>Results</h3>
-    <b-table hover :items="predictions" :fields="tblFields"></b-table>
+    <cite-learn-output-sentence
+      v-for="prediction in predictions"
+      :score="prediction.score"
+      :sentence="prediction.sentence"
+      :citationDetected="prediction.citationDetected"
+      :index="prediction.key"
+      :key="prediction.key">
+    </cite-learn-output-sentence>&nbsp;
   </div>
 </template>
 
 <script>
 
+import CiteLearnOutputSentence from './CiteLearnOutputSentence.vue'
+
 export default {
+  components: { CiteLearnOutputSentence },
   name: 'CiteLearnOutput',
-  props: ['predictions'],
-  data() {
-    return {
-      tblFields: ['sentence','score']
-    }
-  }
+  props: ['predictions']
 }
 </script>
 
