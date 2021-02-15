@@ -1,0 +1,25 @@
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+Type=notify
+# the specific user that our service will run as
+User=someuser
+Group=someuser
+# another option for an even more restricted service is
+# DynamicUser=yes
+# see http://0pointer.net/blog/dynamic-users-with-systemd.html
+RuntimeDirectory=gunicorn
+WorkingDirectory=/home/someuser/citelearn/webapi/app
+ExecStart=/home/someuser/venvs/citelearn/bin/gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker -b "0.0.0.0:80"
+ExecReload=/bin/kill -s HUP $MAINPID
+Environment="PATH=/home/someuser/venvs/citelearn/bin"
+EnvironmentFile=/home/someuser/citelearn/app.env.prod
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

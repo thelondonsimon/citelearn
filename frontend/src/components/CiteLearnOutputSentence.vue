@@ -33,7 +33,6 @@
 <script>
 
 const citationThreshold = process.env.VUE_APP_CITATION_REQ_THRESHOLD
-console.log(process.env)
 
 export default {
   name: 'CiteLearnOutputSentence',
