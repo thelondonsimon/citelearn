@@ -13,18 +13,17 @@ from keras.models import load_model
 from keras.preprocessing.sequence import pad_sequences
 import tensorflow as tf
 import numpy as np
-import nltk
-import nltk.data
 
 import config
 from utils import *
 from citationdetector import detectCitation
+from inputparser import parseParagraphs
 
 import numpy as np
 import redis
 
 # Connect to Redis server
-db = redis.StrictRedis(host=os.environ.get("REDIS_HOST"))
+rd = redis.StrictRedis(host=os.environ.get("REDIS_HOST"))
 
 # Load the pre-trained Keras model and dictionaries
 cfg = config.get_localized_config()
@@ -32,20 +31,13 @@ vocab_w2v = pickle.load(open(cfg.vocb_path, 'rb'))
 section_dict = pickle.load(open(cfg.section_path, 'rb'), encoding='latin1')
 graph = tf.get_default_graph()
 model = load_model(cfg.model_path)
-
-# configure sentence detector
-nltk.download('punkt')
-extra_abbreviations = ['pp', 'no', 'vol', 'ed', 'al', 'e.g', 'etc', 'i.e',
-        'pg', 'dr', 'mr', 'mrs', 'ms', 'vs', 'prof', 'inc', 'incl', 'u.s', 'st',
-        'trans', 'ex']
-sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
-sent_detector._params.abbrev_types.update(extra_abbreviations)
+max_len = cfg.word_vector_length
 
 def classify_process():
     # Continually poll for new submissions to classify
     while True:
         # Pop off multiple classification requests from Redis queue atomically
-        with db.pipeline() as pipe:
+        with rd.pipeline() as pipe:
             pipe.lrange(os.environ.get("TEXT_QUEUE"), 0, int(os.environ.get("BATCH_SIZE")) - 1)
             pipe.ltrim(os.environ.get("TEXT_QUEUE"), int(os.environ.get("BATCH_SIZE")), -1)
             queue, _ = pipe.execute()
@@ -60,37 +52,34 @@ def classify_process():
         # When returning prediction scores, the original sentences which were detected are therefor also persisted into
         # Redis for return to the client.
 
-        textIds = [] # list of uuids for each request being classified
+        queueIds = [] # list of uuids for each request being classified
         X = [] # list of word vectors for each sentence being classified by predict()
         sections = [] # list of section names required by predict()
-        numberOfSentencesInTexts = [] # number of sentences in a request
-        originalSentences = [] # the parsed sentence before being tokenized
+        requests = []
 
-        max_len = cfg.word_vector_length
         for q in queue:
             # Deserialize the object and obtain the input text
             q = json.loads(q.decode("utf-8"))
-            sentences = sent_detector.tokenize(q["text"])
+            paragraphs = parseParagraphs(q["text"])
 
-            textIds.append(q["id"])
-            numberOfSentencesInTexts.append(len(sentences))
+            for par in paragraphs:
+                for sen in par['sentences']:
+                    wordlist = text_to_word_list(sen['rawInput']) # tokenise and lower-case
+                    X_inst = [] # stores the dictionary lookups for each word in a sentence
+                    for word in wordlist:
+                        if max_len != -1 and len(X_inst) >= max_len:
+                            break
+                        # Construct word vectors
+                        X_inst.append(vocab_w2v.get(word, vocab_w2v['UNK']))
+                    X.append(X_inst)
 
-            for text in sentences:
-                originalSentences.append(text)
-                wordlist = text_to_word_list(text) # tokenise and lower-case
-                X_inst = [] # stores the dictionary lookups for each word in a sentence
-                for word in wordlist:
-                    if max_len != -1 and len(X_inst) >= max_len:
-                        break
-                    # Construct word vectors
-                    X_inst.append(vocab_w2v.get(word, vocab_w2v['UNK']))
-                X.append(X_inst)
-
-                #sections.append(section_dict.get('main_section', 0))
-                sections.append(0) # use unknown section name, as scores returned using "main_content" are too high
+                    #sections.append(section_dict.get('main_section', 0))
+                    sections.append(0) # use unknown section name, as scores returned using "main_content" are too high
+            
+            requests.append({'id': q["id"], 'paragraphs': paragraphs})
 
         # Check to see if we need to process the batch
-        if len(textIds) > 0:
+        if len(requests) > 0:
             # format predict() inputs by padding to expected shape and converting sections to np.array
             X = pad_sequences(X, maxlen=max_len, value=vocab_w2v['UNK'], padding='pre')
             sections = np.array(sections)
@@ -98,22 +87,14 @@ def classify_process():
             # Classify the batch of sentences
             preds = model.predict([X,sections])
 
-            # Retrieve the predictions for each original request
-            # and store the serialized data in Redis for retrieval by the web server
-            # including both the original sentence and whether an in-text citation was
-            # detected in that sentence
-            j = 0
-            for i,num in enumerate(numberOfSentencesInTexts):
-                predictions = []
-                for k,p in enumerate(preds[j:num]):
-                    predictions.append({
-                        'key': (j+k),
-                        'score': p[0].astype(float),
-                        'sentence': originalSentences[j+k],
-                        'citationDetected': detectCitation(originalSentences[j+k])
-                    })
-                db.set(textIds[i], json.dumps(predictions))
-                j += num
+            predIndex = 0
+            for req in requests:
+                for par in req['paragraphs']:
+                    for sen in par['sentences']:
+                        sen['predictionScore'] = preds[predIndex][0].astype(float)
+                        sen['citationDetected'] = detectCitation(sen['rawInput'])
+                        predIndex += 1
+                rd.set(req['id'], json.dumps(req['paragraphs']))
 
         # Sleep for a small amount
         time.sleep(float(os.environ.get("SERVER_SLEEP")))

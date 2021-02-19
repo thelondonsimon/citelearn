@@ -15,6 +15,19 @@ services:
     volumes:
       - ./db/data:/var/lib/postgresql/data
       - ./db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+
+  flyway:
+    image: flyway/flyway:7-alpine
+    command: -configFiles=/flyway/conf/flyway.config -locations=filesystem:/flyway/sql -connectRetries=60 migrate
+    networks:
+      - deployml_network
+    volumes:
+      - ./flyway/sql:/flyway/sql
+      - ./flyway/conf/flyway.config:/flyway/conf/flyway.config
+    depends_on:
+      - postgres
+    env_file:
+      - app.env
   
   modelserver:
     build:
@@ -58,6 +71,8 @@ services:
     volumes:
        - ./frontend:/app
        - /app/node_modules
+    env_file:
+      - app.env
 
 networks:
   deployml_network:

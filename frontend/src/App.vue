@@ -1,63 +1,39 @@
 <template>
-  <div id="app">
-    <b-overlay :show="showOverlay" rounded="sm">
-      <b-container fluid>
-        <h1>CiteLearn Analyser</h1>
-        <b-row align-v="start">
-          <b-col>
-            <CiteLearnInput @inputSubmitted="handleInputSubmission" @inputReset="handleInputReset" />
-          </b-col>
-        </b-row>
-        <hr />
-        <b-row align-v="start">
-          <b-col>
-            <CiteLearnOutput v-bind:predictions="predictions" />
-          </b-col>
-        </b-row>
-      </b-container>
-    </b-overlay>
+  <div id="app1">
+    <b-navbar toggleable="lg" type="dark" fixed="top">
+      <b-navbar-nav class="navbar navbar-nav navbar-expand-md navbar-dark bg-dark fixed-top">
+        <b-nav-item to="/" @click="resetUserInput"><img class="ml-2" src="assets/textlogo.png" alt="CiteLearn" title="CiteLearn" height="30"></b-nav-item>
+        <b-nav-item to="/" @click="resetUserInput" class="nav-item nav-link">Home</b-nav-item>
+        <b-nav-item to="about" class="nav-item">About</b-nav-item>
+      </b-navbar-nav>
+    </b-navbar>
+    
+    <main role="main" class="container">
+      <router-view/>
+    </main>
+    <hr class="mt-5" />
+    <footer class="footer">
+      <div class="container">
+        <p class="text-muted text-center"><small>CiteLearn is a project of the <a href="https://www.uts.edu.au/">University of Technology Sydney</a></small></p>
+      </div>
+    </footer>
   </div>
 </template>
 
 <script>
-import CiteLearnInput from './components/CiteLearnInput.vue'
-import CiteLearnOutput from './components/CiteLearnOutput.vue'
-
-const axios = require('axios');
-const apiBaseUrl = process.env.VUE_APP_API_BASE_URL
-
 export default {
   name: 'App',
-  components: {
-    CiteLearnInput,
-    CiteLearnOutput
-  },
-  data () {
-    return {
-      predictions: [],
-      showOverlay: false
-    }
-  },
   methods: {
-    handleInputSubmission(text) {
-      this.showOverlay = true 
-      const that = this
-      const json = { text: text }
-      axios.post(apiBaseUrl + '/predict',json)
-        .then(function(response) {
-          that.predictions = response.data
-          that.showOverlay = false
-        })
-    },
-    handleInputReset() {
-      this.predictions = []
+    resetUserInput: function() {
+      this.$store.commit('setPredictionData',{id: null,paragraphs:[]})
+      this.$store.commit('setInputText','')
     }
   }
 }
 </script>
 
-<style>
-#app {
+<style lang="scss">
+#app1 {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
