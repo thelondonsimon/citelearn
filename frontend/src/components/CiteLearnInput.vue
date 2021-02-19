@@ -25,6 +25,9 @@
         <p class="text-center"><b-button @click="showErrorModal = false">Close</b-button></p>
       </div>
     </b-modal>
+    <b-tooltip target="input-group-2" variant="danger" triggers="manual" :show="showEmptyTooltip">
+      No text was detected for analysing
+  </b-tooltip>
   </div>
 </template>
 
@@ -38,16 +41,27 @@ export default {
   data () {
     return {
       showOverlay: false,
-      showErrorModal: false
+      showErrorModal: false,
+      showEmptyTooltip: false
     }
   },
   methods: {
     onSubmit: function(e) {
       e.preventDefault();
+      const that = this
+
+      if (this.$store.state.inputText.trim() == '') {
+        this.showEmptyTooltip = true
+        setTimeout(function() {
+          that.showEmptyTooltip = false
+        },2500)
+        return false;
+      }
+
       this.showOverlay = true
       const json = { text: this.$store.state.inputText, originalRequestId: this.$store.state.originalRequestId }
-      const that = this
-      axios.post(apiBaseUrl + '/predict',json, { timeout: 3500})
+      
+      axios.post(apiBaseUrl + '/predict',json, { timeout: 4000})
         .then(function(response) {
           that.$store.commit('setPredictionData',response.data)
           that.showOverlay = false

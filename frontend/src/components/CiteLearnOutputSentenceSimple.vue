@@ -9,7 +9,8 @@
     <b-tooltip
       :show.sync="show"
       :target="'sentence_' + index"
-      :variant="tooltipVariant">
+      :variant="tooltipVariant"
+      @click="showPopover">
       <span>{{tooltipText}}</span>
     </b-tooltip>
   </div>
@@ -53,7 +54,7 @@ export default {
       if (this.citationNeeded) {
         return (this.citationDetected) ? 'Good use of citation as required!' : 'This sentence requires a citation, but none was found!'
       }
-      return 'Citation not required'
+      return (this.citationDetected) ? 'Citation detected but not required' : 'Citation not required'
     }
   },
   methods: {
@@ -78,10 +79,10 @@ span.citationMissing.citationNeeded {
 span.citationMissing.citationNeeded:hover {
     border-bottom:1px solid darkred
 }
-span.citationPresent {
+span.citationPresent.citationNeeded {
     color:green;
 }
-span.citationPresent:hover {
+span.citationPresent.citationNeeded:hover {
     border-bottom:1px solid darkgreen
 }
 span.citationNotNeeded:hover {

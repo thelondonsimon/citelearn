@@ -19,12 +19,12 @@
     <hr />
     <p class="text-center">
     
-        <b-button type="submit" variant="danger" class="mr-2" to="/">
+        <b-button type="submit" variant="danger" class="mr-2 mb-2" to="/">
           <b-icon class="mr-3" icon="arrow-left-circle"></b-icon>
           Edit Text
         </b-button>
     
-        <b-button type="submit" variant="success" class="ml-2" to="review">
+        <b-button type="submit" variant="success" class="ml-2 mb-2" to="review">
           Review Detailed Results
           <b-icon class="ml-3" icon="arrow-right-circle"></b-icon>
         </b-button>

@@ -1,11 +1,14 @@
 <template>
   <div id="app1">
-    <b-navbar toggleable="lg" type="dark" fixed="top">
-      <b-navbar-nav class="navbar navbar-nav navbar-expand-md navbar-dark bg-dark fixed-top">
-        <b-nav-item to="/" @click="resetUserInput"><img class="ml-2" src="assets/textlogo.png" alt="CiteLearn" title="CiteLearn" height="30"></b-nav-item>
-        <b-nav-item to="/" @click="resetUserInput" class="nav-item nav-link">Home</b-nav-item>
-        <b-nav-item to="about" class="nav-item">About</b-nav-item>
-      </b-navbar-nav>
+    <b-navbar toggleable="sm" type="dark" variant="dark" fixed="top">
+      <b-navbar-brand to="/" @click="resetUserInput"><img class="ml-2" src="assets/textlogo.png" alt="CiteLearn" title="CiteLearn" height="30"></b-navbar-brand>
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+      <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav>
+          <b-nav-item to="/" @click="resetUserInput" class="ml-2">Home</b-nav-item>
+          <b-nav-item to="about" class="ml-2">About</b-nav-item>
+        </b-navbar-nav>
+      </b-collapse>
     </b-navbar>
     
     <main role="main" class="container">
