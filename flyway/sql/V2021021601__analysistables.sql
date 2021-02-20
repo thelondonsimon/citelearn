@@ -22,6 +22,7 @@ ALTER TABLE analysis_paragraph
 CREATE TABLE analysis_sentence (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     analysis_paragraph_id uuid NOT NULL,
+    sequence_no SMALLINT NOT NULL,
     input text COLLATE pg_catalog."default" NOT NULL,
     dt_evaluated timestamp(0) without time zone,
     citation_detected boolean,

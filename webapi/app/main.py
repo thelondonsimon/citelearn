@@ -93,14 +93,16 @@ async def predict(input: InputText):
             with pg_con:
                 with pg_con.cursor() as cursor:
                     cursor.execute("UPDATE analysis_request SET dt_predicted = %s WHERE id = %s",('now()',reqUuid))
-                    for par in data['paragraphs']:
+                    for i,par in enumerate(data['paragraphs']):
                         parUuid = str(uuid.uuid4())
                         par['uuid'] = parUuid
+                        par['sequence'] = (i+1)
                         cursor.execute("INSERT INTO analysis_paragraph (id,analysis_request_id,sequence_no,heading) VALUES (%s,%s,%s,%s)",(parUuid,reqUuid,par['sequence'],par['heading']))
-                        for sen in par['sentences']:
+                        for j,sen in enumerate(par['sentences']):
                             senUuid = str(uuid.uuid4())
                             sen['uuid'] = senUuid
-                            cursor.execute("INSERT INTO analysis_sentence (id,analysis_paragraph_id,input,citation_detected,prediction_score_raw) VALUES (%s,%s,%s,%s,%s)",(senUuid,parUuid,sen['rawInput'],sen['citationDetected'],sen['predictionScore']))
+                            sen['sequence'] = (j+1)
+                            cursor.execute("INSERT INTO analysis_sentence (id,analysis_paragraph_id,sequence_no,input,citation_detected,prediction_score_raw) VALUES (%s,%s,%s,%s,%s,%s)",(senUuid,parUuid,sen['sequence'],sen['rawInput'],sen['citationDetected'],sen['predictionScore']))
             
             # break from the polling loop
             break

@@ -1,4 +1,4 @@
-# citelearn
+# CiteLearn
 
 CiteLearn provides a user interface for classifying input text against the [Citation Needed model](https://github.com/mirrys/citation-needed-paper).
 
@@ -20,7 +20,7 @@ Production build scripts will retrieve these dependencies automatically, however
 
 
 ## Deployment: VMs
-CiteLearn also be deployed using traditional virtual machines by cloning the repository and configuring the necessary servers using the guidelines below.
+CiteLearn can also be deployed using traditional virtual machines by cloning the repository and configuring the necessary servers using the guidelines below.
 
 
 ### Frontend
@@ -53,9 +53,88 @@ CiteLearn also be deployed using traditional virtual machines by cloning the rep
 * Requires **postgresql** and **flyway**
 * Create the database user (e.g. `citelearn`) and database (e.g. `citelearn`) which will be used to host the schema
 * Copy and edit `flyway/conf/flyqay.conf` to `~/flyway.conf`
-* Setup the database schema by running `flyway -locations=filesystem:~/citelearn/flyway/sql migrate`
+* Setup the database schema by running `flyway -locations=filesystem:/home/username/citelearn/flyway/sql migrate`
 
 
 ### Redis
 * Requires **redis-server**
 * Ensure the server is configured to bind to the necessary network interfaces
+
+## API Endpoints
+The webapi exposes the following endpoints:
+
+**POST /predict**
+
+Is designed to accept a user submission which is parsed into paragraphs (with optional headings) and setences. Each sentence returned includes a prediction score between 0 and 1 (`predictionScore`) from the model and a boolean value indicating whether an in-text citation was detected (`citationDetected`).
+
+The payload can also include an `originalRequestId` property, which is used to identify resubmissions of a previous user submission by specifying the original response `id`.
+
+```
+POST /predict
+
+Payload
+{
+    "text": string,
+    "originalRequestId": uuid
+}
+
+Response
+{ 
+    "id": uuid,
+    "paragraphs": [
+        {
+            "uuid": uuid,
+            "heading": string,
+            "rawInput": string,
+            "sequence": int,
+            "sentences": [
+                {
+                    "uuid": uuid,
+                    "rawInput": string,
+                    "predictionScore": float,
+                    "citationDetected": boolean,
+                    "sequence": int
+                },
+                ...
+            ]
+        },
+        ...
+    ]
+}
+
+--
+
+Exception
+{
+    "success": boolean
+}
+```
+
+**PATCH /analysis_sentence**
+
+Accepts a payload which updates an existing analysis_sentence. It is used to add user evaluations of the predictions made by CiteLearn for individual sentences.
+
+```
+POST /analysis_sentence
+
+Payload
+{
+    "id": uuid,
+    "dtEvaludated": string,
+    "userEvaluationCategory": string,
+    "userEvaluationText" : string
+}
+
+Response
+{
+    "id": uuid
+}
+
+--
+
+Exception 
+{
+    "success": boolean,
+    "error": string
+}
+```
