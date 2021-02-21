@@ -1,7 +1,9 @@
 <template>
-  <div>
-      <b-alert show>Citelearn detected that the following sentences require citations. You may disagree! Review and provide feedback for each sentence.</b-alert>
-      <table class="table table-hover">
+  <div v-if="this.$store.getters.sentenceToReview.length > 0">
+      <h3 class="mt-5">Review CiteLearn's Recommendations</h3>
+      <p>Citelearn detected that the following sentences require citations. You may disagree! Review and provide feedback for each sentence.</p>
+      
+        <table class="table table-hover">
           <thead>
               <tr>
                   <th scope="col">Sentence</th>
@@ -18,17 +20,6 @@
             </cite-learn-review-sentence>
           </tbody>
       </table>
-    <hr />
-    <p class="text-center">
-        <b-button type="submit" variant="danger" class="mr-2" to="/">
-            <b-icon class="mr-2" icon="arrow-left-circle"></b-icon>
-            Edit Text
-        </b-button>
-        <b-button type="submit" variant="success" class="mr-2" to="feedback">
-            Continue
-            <b-icon class="ml-2" icon="arrow-right-circle"></b-icon>
-        </b-button>
-    </p>
   </div>
 </template>
 

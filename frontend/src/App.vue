@@ -17,7 +17,7 @@
     <hr class="mt-5" />
     <footer class="footer">
       <div class="container">
-        <p class="text-muted text-center"><small>CiteLearn is a project of the <a href="https://www.uts.edu.au/">University of Technology Sydney</a></small></p>
+        <p class="text-muted text-center"><small>CiteLearn is a project of the <a href="https://www.uts.edu.au/">University of Technology, Sydney</a>  &copy; 2021</small></p>
       </div>
     </footer>
   </div>

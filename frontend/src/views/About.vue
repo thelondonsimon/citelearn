@@ -7,8 +7,8 @@
       <p>The aim of the CiteLearn project is to build  learning tasks for the improvement of information literacy and credibility practices for scalable use across teaching contexts.</p>
       <h3 class="mt-5">Development Team</h3>
       <p>CiteLearn was developed at the University of Technology, Sydney's <a href="https://www.uts.edu.au/about/faculty-transdisciplinary-innovation">Faculty of Transdisciplinary Innovation</a> by Simon Chambers, Simon Knight, Shibani Antonette and Heather Ford.</p>
-      <p>The software is made available under the Apache License and is published at <a href="https://github.com/thelondonsimon/citelearn">github.com/thelondonsimon/citelearn</a>
-      <h3 class="mt-5">Acknowledgements</h3>
+      <p>The software is made available under the Apache License and is published at <a href="https://github.com/thelondonsimon/citelearn">github.com/thelondonsimon/citelearn</a>.
+      <h3 class="mt-5 pb-2">Acknowledgements</h3>
       <b-row>
         <b-col>
           <b-card

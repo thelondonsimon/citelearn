@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import CiteLearnInput from '@/components/CiteLearnInput.vue'
 import CiteLearnOutput from '@/components/CiteLearnOutput.vue'
-import CiteLearnReview from '@/components/CiteLearnReview.vue'
 import CiteLearnFeedback from '@/components/CiteLearnFeedback.vue'
 import About from '@/views/About.vue'
 
@@ -16,10 +15,6 @@ const routes = [
   {
     path: '/analyse',
     component: CiteLearnOutput
-  },
-  {
-    path: '/review',
-    component: CiteLearnReview
   },
   {
     path: '/feedback',

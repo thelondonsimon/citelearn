@@ -2,7 +2,7 @@
   <div>
     <b-overlay :show="showOverlay" rounded="sm">
       <h1>CiteLearn</h1>
-      <p>CiteLearn uses <a href="https://github.com/mirrys/citation-needed-paper">machine learning models</a> to analyse text and predict if citations are needed.</p>
+      <p>CiteLearn uses <a href="https://github.com/mirrys/citation-needed-paper" target="_blank">machine learning models</a> to analyse text and predict if citations are needed.</p>
       <b-form @submit="onSubmit">
       <b-form-group id="input-group-2" label-for="citelearn-inputtext">
           <b-form-textarea

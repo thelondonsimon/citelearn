@@ -17,6 +17,7 @@
       </div>
     </div>
     <hr />
+    <cite-learn-review></cite-learn-review>
     <p class="text-center">
     
         <b-button type="submit" variant="danger" class="mr-2 mb-2" to="/">
@@ -24,8 +25,8 @@
           Edit Text
         </b-button>
     
-        <b-button type="submit" variant="success" class="ml-2 mb-2" to="review">
-          Review Detailed Results
+        <b-button type="submit" variant="success" class="ml-2 mb-2" to="feedback">
+          Continue
           <b-icon class="ml-3" icon="arrow-right-circle"></b-icon>
         </b-button>
     </p>
@@ -34,10 +35,11 @@
 
 <script>
 
-import CiteLearnOutputSentenceSimple from './CiteLearnOutputSentenceSimple.vue'
+import CiteLearnOutputSentenceSimple from './CiteLearnOutputSentenceSimple'
+import CiteLearnReview from './CiteLearnReview'
 
 export default {
-  components: { CiteLearnOutputSentenceSimple },
+  components: { CiteLearnOutputSentenceSimple, CiteLearnReview },
   name: 'CiteLearnOutput',
   created: function() {
     if (this.$store.state.predictionData.length == 0) {

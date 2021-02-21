@@ -2,7 +2,7 @@
   <tr class="sentence">
       <td>{{sentence}}</td>
       <td>
-        <b-form-select @change="updateReview" v-model="reviewSelected" :options="reviewOptions" size="sm" class="mt-3"></b-form-select>
+        <b-form-select @change="updateReview" v-model="reviewSelected" :options="reviewOptions" size="sm"></b-form-select>
         <b-form-input v-show="showOther" @change="updateReview" v-model="reviewOther" size="sm" class="mt-3" placeholder="Enter your reason..."></b-form-input>
       </td>
   </tr>
