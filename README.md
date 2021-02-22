@@ -52,7 +52,7 @@ CiteLearn can also be deployed using traditional virtual machines by cloning the
 ### Postgresql
 * Requires **postgresql** and **flyway**
 * Create the database user (e.g. `citelearn`) and database (e.g. `citelearn`) which will be used to host the schema
-* Copy and edit `flyway/conf/flyqay.conf` to `~/flyway.conf`
+* Copy and edit `flyway/conf/flyway.conf` to `~/flyway.conf`
 * Setup the database schema by running `flyway -locations=filesystem:/home/username/citelearn/flyway/sql migrate`
 
 

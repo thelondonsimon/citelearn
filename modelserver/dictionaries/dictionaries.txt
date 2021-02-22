@@ -6,6 +6,6 @@ Whatever words or sections are outside these two dictionaries, they will be assi
 
 The production Dockerfile downloads these files as part of the build process.
 
-For development environments, download the English language dictionaries and place them in this ./dictionaries folder
-* https://citelearn.s3-ap-southeast-2.amazonaws.com/dictionaries/section_dict_en.pck
-* https://citelearn.s3-ap-southeast-2.amazonaws.com/dictionaries/word_dict_en.pck
+For development or VM environments, download the English language dictionaries and place them in this ./dictionaries folder
+* https://citelearndata.wmcloud.org/dictionaries/word_dict_en.pck
+* https://citelearndata.wmcloud.org/dictionaries/section_dict_en.pck
