@@ -3,4 +3,4 @@ Keras==2.1.5
 nltk==3.4.5
 numpy==1.18.0
 tensorflow==1.7.0
-redis
+redis==3.5.3

@@ -1,5 +1,3 @@
-import os
-import errno
 import re
 import hashlib
 
