@@ -18,11 +18,11 @@ CiteLearn supports using two different families of models for making predictions
 
 The first is the [Citation Needed model](https://github.com/mirrys/citation-needed-paper), which was trained using TensorFlow 1. Details for downloading the dictionary and model files are provided at this project's GitHub repository.
 
-The second is the **CiteLearn** family of models trained using BERT word embeddings, and which uses a different set of training data and TensorFlow 2. Currently a single model is available to download:
+The second is the [CiteLearn family of models](https://github.com/thelondonsimon/citelearn-model) developed as part of this project. These models have been trained using TensorFlow 2. They use BERT word embeddings and a different set of training data. Currently a single model is available to download:
 
 * [BERT/Books/FA-all](https://citelearn.s3-ap-southeast-2.amazonaws.com/models/citelearn_fa_all_bert_books_20210720.zip): using a pre-trained BERT word embedding trained on Wikipedia and BooksCorpus, trained on the complete page content of approximatley 5,000 Wikipedia Featured Articles
 
-Because of the different TensorFlow versions used to train each model, the choice of model used requires different Python libaries. The model type to be used is specified as an environment variable, and the Dockerised version of CiteLearn is currently configured to provide access to the Citation Needed model.
+Because of the different TensorFlow versions used to train each model, the choice of model used requires different Python libraries. The model type to be used is specified as an environment variable, and the Dockerised version of CiteLearn is currently configured to provide access to the Citation Needed model.
 
 ## Deployment: Docker
 
@@ -56,9 +56,9 @@ CiteLearn can also be deployed using traditional virtual machines by cloning the
 ### Modelserver
 
 * Requires **python3.6** with **pip**
-* Create and activate a virtualenv for citelearn
-* Install the requirements corresponding to the model to be used for predictions. CiteLearn models use TensorFlow 2 (`requirements-citelearn-models.txt`), whereas the Citation Needed model uses TensorFLow 1 (`requirements.txt`): `pip install -r ./modelserver/requirements.txt`
-* Download the dictionary and model files appropriate to the model being used (see [Dockerfile-prod](modelserver/Dockerfile-prod))
+* For each model type that needs to be supported (CitationNeeded and/or CiteLearn), create and activate a corresponding virtualenv
+* For each virtualenv, install its corresponding requirements (CitationNeeded = `requirements.txt` ; CiteLearn =  `requirements-citelearn-models.txt`)
+* Download the dictionary and model files appropriate to the model being used (see above / [Dockerfile-prod](modelserver/Dockerfile-prod))
 * Copy `./app.env` to `./app.env.prod` and update to reflect your production environment
 * Edit, install and enable the template `systemd` script for running the modelserver python script at [modelserver/vm/modelserver.service](modelserver/vm/modelserver.service)
 

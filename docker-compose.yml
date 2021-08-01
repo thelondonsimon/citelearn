@@ -7,7 +7,7 @@ services:
   
   postgres:
     image: postgres:13-alpine
-    restart: always
+    restart: on-failure
     networks:
       - deployml_network
     env_file:

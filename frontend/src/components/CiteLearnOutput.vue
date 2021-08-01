@@ -25,9 +25,9 @@
           Edit Text
         </b-button>
     
-        <b-button type="submit" variant="success" class="ml-2 mb-2" to="feedback">
-          Continue
-          <b-icon class="ml-3" icon="arrow-right-circle"></b-icon>
+        <b-button type="submit" variant="success" class="ml-2 mb-2" to="/" @click="resetUserInput">
+          Submit New Text
+          <b-icon class="ml-3" icon="arrow-clockwise"></b-icon>
         </b-button>
     </p>
   </div>
@@ -44,6 +44,12 @@ export default {
   created: function() {
     if (this.$store.state.predictionData.length == 0) {
       this.$router.push('/')
+    }
+  },
+  methods: {
+    resetUserInput: function() {
+      this.$store.commit('setPredictionData',{id: null,paragraphs:[]})
+      this.$store.commit('setInputText','')
     }
   }
 }
